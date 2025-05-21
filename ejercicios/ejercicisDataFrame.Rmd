@@ -1,0 +1,67 @@
+---
+title: "Medals"
+author: "Josue Serulle"
+date: "2025-05-20"
+output:
+  html_document:
+    df_print: paged
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Reportes de las olimpiadas de inviernos 
+
+Cargando el data frame
+```{r}
+medals = read.csv("http://winterolympicsmedals.com/medals.csv", header = TRUE)
+head(medals)
+```
+
+### Pregunta 1
+¿Cuántos deportistas aparecen en el data frame?
+```{r}
+dim(medals)[1]
+```
+
+### Pregunta 2
+¿Cuántos deportistas han ganado medallas de oro? ¿Cuántos han ganado medallas de plata? ¿Y cuántos de bronce?
+```{r}
+table(medals$Medal)
+```
+
+### Pregunta 3
+¿En cuántos lugares se han hecho olimpiadas de invierno?
+```{r}
+length(unique(medals$City))
+```
+
+### Pregunta 4
+¿Cuántos hombres y cuántas mujeres hay?
+```{r}
+table(medals$Event_gender)
+```
+
+### Pregunta 5
+¿En qué año participaron más deportistas?
+```{r}
+table(medals$Year)
+which.max(table(medals$Year))
+```
+
+### Pregunta 6
+El año que hubo más deportistas fue en 2006 con un total de 252
+
+El campo NOC indica el país del ganador de la medalla. ¿Qué país puede presumir de haber ganado más medallas de oro en los juegos de invierno entre 1960 y 1996?
+```{r}
+medals_filter = subset(medals, Year >= 1960 & Year <= 1996 & Medal == "Gold")
+
+gold_table = table(medals_filter$NOC)
+gold_max<- max(gold_table)
+country_more_gold <- names(gold_table[gold_table == gold_max])
+
+cat("País con más oros entre 1960 y 1996:", country_more_gold, "con", gold_max, "medallas de oro\n")
+```
+

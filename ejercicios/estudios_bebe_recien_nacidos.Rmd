@@ -1,0 +1,141 @@
+---
+title: "Estudios_bebes_recien_nacidos"
+author: "Josue Serulle"
+date: "2025-05-20"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Estudio de Bebés Recién Nacidos
+
+Instala y carga el paquete MASS en R. En él hay una tabla de datos llamada birthwt sobre factores que
+pueden incidir en el peso de los niños al nacer.
+
+```{r}
+library(MASS)
+
+```
+
+## Pregunta 1
+
+Utiliza str() y head() para explorar la estructura, y con help(), mirar el significado de cada variable
+
+```{r}
+str(birthwt)
+head(birthwt)
+help("birthwt")
+```
+
+## Pregunta 2
+
+Calcula una tabla de frecuencias relativas marginales de los pares raza de la madre y peso inferior a 2.5 kg
+o no, que permita ver si la raza de la madre influye en el peso del bebé.
+
+```{r}
+birthwt$race = factor(birthwt$race, labels = c("white", "black", "other"))
+birthwt$low = factor(birthwt$low, labels = c(">=2.5kg", "<2.5kg"))
+
+table_race_low = table(birthwt$race, birthwt$low)
+prop.table(table_race_low, margin = 1)
+```
+
+## Pregunta 3
+
+Dibuja un diagrama de mosaico de la tabla del ejercicio anterior
+
+```{r}
+mosaicplot(table_race_low, 
+           main  = "Peso del bebe segun raza de la madre",
+           xlab  = "Raza de la madre",
+           ylab  = "Peso",
+           color = TRUE)
+```
+
+## Pregunta 4
+
+Dibuja un diagrama bidimensional de barras, con las barras organizadas en bloques, que permita visualizar
+la información de los ejercicios anteriores. Aprovecha para poner nombres adecuados a los bloques, colores
+a las barras y añadir una leyenda que explique qué representa cada barra
+
+```{r}
+barplot(table_race_low, beside = TRUE,
+        col    = c("skyblue", "tomato", "lightgreen"),
+        legend = rownames(table_race_low),
+        main   = "Distribucion del peso al nacer segun la raza",
+        xlab   = "Peso al nacer",
+        ylab   = "Frecuencia")
+```
+
+## Pregunta 5
+
+¿Se puede obtener alguna conclusión de la tabla y el diagrama de barras anterior? Argumenta tu respuesta.
+
+Sí, se pueden observar posibles diferencias. Si por ejemplo, el porcentaje de bajo peso es mayor en una raza específica, podría indicar un factor asociado. Sin embargo, esto no implica causalidad, solo una asociación observable.
+
+## Pregunta 6
+
+Repite los cuatro ejercicios anteriores para los pares madre fumadora o no, peso inferior a 2.5 kg o no y para
+los pares madre hipertensa o no y peso inferior a 2.5 kg o no
+
+### Fumadoras
+
+```{r}
+# Fumadoras
+birthwt$smoke = factor(birthwt$smoke, labels = c("No fumadora", "Fumadora"))
+
+table_smoke_low = table(birthwt$smoke, birthwt$low)
+prop.table(table_smoke_low, margin = 1)
+
+mosaicplot(table_smoke_low, main = "Peso segun fumar", color = TRUE)
+
+barplot(table_smoke_low, beside = TRUE,
+        col    = c("lightblue", "pink"),
+        legend = rownames(table_smoke_low),
+        main   = "Peso al nacer vs fumar",
+        xlab   = "Peso",
+        ylab   = "Frecuencia")
+```
+
+### Hipertensa
+
+```{r}
+# Hipertensa
+birthwt$ht = factor(birthwt$ht, labels = c("No hipertensa", "Hipertensa"))
+
+table_ht_low = table(birthwt$ht, birthwt$low)
+prop.table(table_ht_low, margin = 1)
+
+mosaicplot(table_ht_low, main = "Peso segun hipertensión", color = TRUE)
+
+barplot(table_ht_low, beside = TRUE,
+        col    = c("orange", "purple"),
+        legend = rownames(table_ht_low),
+        main   = "Peso al nacer vs hipertensión",
+        xlab   = "Peso",
+        ylab   = "Frecuencia")
+```
+
+## Pregunta 7
+
+Calcula una tabla de frecuencias relativas marginales de la terna raza de la madre, madre fumadora o no y
+peso inferior a 2.5 kg o no, que permita ver si la raza de la madre y su condición de fumadora o no fumadora
+influyen en el peso del bebé.
+
+```{r}
+table_triple = xtabs(~ race + smoke + low, data = birthwt)
+prop.table(table_triple, margin = 1)
+```
+
+## Pregunta 8
+
+Dibuja un diagrama de mosaico de la tabla del ejercicio anterior.
+
+```{r}
+mosaicplot(table_triple, 
+           main  = "Peso al nacer segun raza y habito de fumar",
+           color = TRUE)
+```
+
